@@ -1,7 +1,15 @@
 import pyshark
 import streamlit as st
+import asyncio
 
 def extract_http_streams(pcap_path):
+    # FIX: Tell the Streamlit thread to create an asyncio event loop for PyShark
+    try:
+        loop = asyncio.get_event_loop()
+    except RuntimeError:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+
     streams = []
     try:
         cap = pyshark.FileCapture(pcap_path, display_filter='http')
